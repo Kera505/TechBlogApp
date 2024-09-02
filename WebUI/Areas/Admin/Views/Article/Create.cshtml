@@ -1,0 +1,53 @@
+﻿@model Article
+
+<form method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label asp-for="Title"></label>
+        <input type="text" asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Content"></label>
+        <textarea id="editor" type="text" asp-for="Content" class="form-control"></textarea>
+        <span asp-validation-for="Content" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label for="photo">Photo</label>
+        <input type="file" accept="image/*" id="photo" name="Photo" />
+        <span asp-validation-for="PhotoUrl" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <select class="form-control" asp-for="CategoryId" asp-items="@ViewBag.Categories">
+            <option>Select Category</option>
+        </select>
+        <span asp-validation-for="CategoryId" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <select multiple class="form-control" name="tagIds">
+            @foreach (var item in ViewBag.Tags as List<Tag>)
+            {
+                <option value="@item.Id">@item.TagName</option>
+            }
+        </select>
+        @if(ViewBag.TagError != null)
+        {
+            <p class="text-danger">@ViewBag.TagError</p>
+        }
+    </div>
+    @if (User.IsInRole("Admin") || User.IsInRole("Admin Editor"))
+    {
+        <div class="form-group">
+            <label asp-for="IsFeatured">Featured</label>
+            <input type="checkbox" asp-for="IsFeatured" />
+        </div>
+    }
+    <input type="submit" class="btn btn-info" value="Create" />
+</form>
+
+@section Scripts{
+    <script src="//cdn.ckeditor.com/4.22.0/standard/ckeditor.js"></script>
+    @* <script src="//cdn.ckeditor.com/4.23.0-lts/standard/ckeditor.js"></script> *@
+    <script>
+        CKEDITOR.replace('editor');
+    </script>
+}
